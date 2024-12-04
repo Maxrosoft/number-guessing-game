@@ -70,12 +70,18 @@ customLog("Let's start the game!");
 
 let play: boolean = true;
 let playQuestion: string;
+
 let hidden: number;
 let attemptsAvailable: number;
 let attemptsMade: number;
 let guess: number;
 
+let startTime: number;
+let endTime: number;
+
 while (play) {
+    startTime = Date.now();
+
     hidden = randomIntFromInterval(1, 100);
     attemptsAvailable = difficultyLevelValues[difficulty - 1];
     attemptsMade = 0;
@@ -108,7 +114,10 @@ while (play) {
         return "Damn. You've run out of attempts.";
     })();
 
+    endTime = Date.now();
+
     customLog(gameResultMessage);
+    customLog(`Time spent: ${Math.floor((endTime - startTime) / 1000)}s`)
 
     playQuestion = (
         await inquirer.prompt({
