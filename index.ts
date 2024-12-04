@@ -68,36 +68,56 @@ customLog("Let's start the game!");
 
 // Game
 
-const hidden: number = randomIntFromInterval(1, 100);
-const attemptsAvailable = difficultyLevelValues[difficulty - 1];
-let attemptsMade: number = 0;
-let guess: number = 0;
+let play: boolean = true;
+let playQuestion: string;
+let hidden: number;
+let attemptsAvailable: number;
+let attemptsMade: number;
+let guess: number;
 
-console.log(hidden); // for testing
+while (play) {
+    hidden = randomIntFromInterval(1, 100);
+    attemptsAvailable = difficultyLevelValues[difficulty - 1];
+    attemptsMade = 0;
+    guess = 0;
 
-const gameResultMessage: string = await (async () => {
-    while (attemptsMade < attemptsAvailable) {
-        guess = (
-            await inquirer.prompt({
-                type: "number",
-                name: "guess",
-                message: "Enter your guess:",
-                validate: guessValidator,
-            })
-        ).guess;
+    // console.log(hidden); // for testing
 
-        attemptsMade++;
+    const gameResultMessage: string = await (async () => {
+        while (attemptsMade < attemptsAvailable) {
+            guess = (
+                await inquirer.prompt({
+                    type: "number",
+                    name: "guess",
+                    message: "Enter your guess:",
+                    validate: guessValidator,
+                })
+            ).guess;
 
-        if (guess === hidden) {
-            return `Congratulations! You guessed the correct number in ${attemptsMade} attempt${
-                attemptsMade > 1 ? "s" : ""
-            }.`;
-        } else {
-            const how: string = guess > hidden ? "less" : "greater";
-            customLog(`Incorrect! The number is ${how} than ${guess}.`);
+            attemptsMade++;
+
+            if (guess === hidden) {
+                return `Congratulations! You guessed the correct number in ${attemptsMade} attempt${
+                    attemptsMade > 1 ? "s" : ""
+                }.`;
+            } else {
+                const how: string = guess > hidden ? "less" : "greater";
+                customLog(`Incorrect! The number is ${how} than ${guess}.`);
+            }
         }
-    }
-    return "Damn. You've run out of attempts.";
-})();
+        return "Damn. You've run out of attempts.";
+    })();
 
-customLog(gameResultMessage);
+    customLog(gameResultMessage);
+
+    playQuestion = (
+        await inquirer.prompt({
+            type: "list",
+            name: "playQuestion",
+            message: "Play another game?",
+            choices: ["Yes", "No"],
+        })
+    ).playQuestion;
+
+    play = playQuestion === "Yes";
+}
