@@ -1,9 +1,13 @@
 import inquirer from "inquirer";
 
-function customLog(str: string, pre?: boolean): void {
-    const start: string = pre ? "\n" : "";
-    console.log(start + str + "\n");
-    
+// Utils
+
+function customLog(str: string): void {
+    console.log(str + "\n");
+}
+
+function randomIntFromInterval(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 const greetingMessage: string =
@@ -14,7 +18,17 @@ const greetingMessage: string =
 function difficultyLevelValidator(value: number | undefined): string | boolean {
     if (value) {
         if (![1, 2, 3].includes(value)) return "value must be in [1, 2, 3]";
-        return true
+        return true;
+    }
+    return "value not found";
+}
+
+function guessValidator(value: number | undefined): string | boolean {
+    if (value) {
+        if (value < 1 || value > 100) {
+            return "value must be in [1 - 100])";
+        }
+        return true;
     }
     return "value not found";
 }
@@ -26,10 +40,11 @@ const difficultyLevelMessage: string =
     "3: Hard (3 chances)";
 
 const difficultyLevelArray: string[] = ["Easy", "Medium", "Hard"];
+const difficultyLevelValues: number[] = [10, 5, 3];
 
 type difficultyLevelType = 1 | 2 | 3;
 
-// Game start
+// Init
 
 customLog(greetingMessage);
 customLog(difficultyLevelMessage);
@@ -46,9 +61,43 @@ const difficulty: difficultyLevelType = (
 customLog(
     `Great! You have selected the ${
         difficultyLevelArray[difficulty - 1]
-    } difficulty level.`, true
+    } difficulty level.`
 );
 
 customLog("Let's start the game!");
 
+// Game
 
+const hidden: number = randomIntFromInterval(1, 100);
+const attemptsAvailable = difficultyLevelValues[difficulty - 1];
+let attemptsMade: number = 0;
+let guess: number = 0;
+
+console.log(hidden); // for testing
+
+const gameResultMessage: string = await (async () => {
+    while (attemptsMade < attemptsAvailable) {
+        guess = (
+            await inquirer.prompt({
+                type: "number",
+                name: "guess",
+                message: "Enter your guess:",
+                validate: guessValidator,
+            })
+        ).guess;
+
+        attemptsMade++;
+
+        if (guess === hidden) {
+            return `Congratulations! You guessed the correct number in ${attemptsMade} attempt${
+                attemptsMade > 1 ? "s" : ""
+            }.`;
+        } else {
+            const how: string = guess > hidden ? "less" : "greater";
+            customLog(`Incorrect! The number is ${how} than ${guess}.`);
+        }
+    }
+    return "Damn. You've run out of attempts.";
+})();
+
+customLog(gameResultMessage);
