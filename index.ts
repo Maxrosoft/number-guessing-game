@@ -1,4 +1,8 @@
 import inquirer from "inquirer";
+import 'dotenv/config';
+
+// Env
+const DEBUG: boolean = process.env.DEBUG === "true";
 
 // Utils
 
@@ -87,7 +91,7 @@ while (play) {
     attemptsMade = 0;
     guess = 0;
 
-    // console.log(hidden); // for testing
+    if (DEBUG) console.log("DEBUG: hidden nubber is " + hidden); // for debug
 
     const gameResultMessage: string = await (async () => {
         while (attemptsMade < attemptsAvailable) {
