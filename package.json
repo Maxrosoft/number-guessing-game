@@ -1,11 +1,8 @@
 {
-  "dependencies": {
-    "typescript": "^5.7.2"
-  },
   "name": "number-guessing-game",
   "version": "1.0.0",
   "description": "https://roadmap.sh/projects/number-guessing-game",
-  "main": "index.ts",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,7 +11,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "inquirer": "^12.1.0"
+  },
   "devDependencies": {
+    "@types/inquirer": "^9.0.7",
     "tsx": "^4.19.2"
   }
 }
